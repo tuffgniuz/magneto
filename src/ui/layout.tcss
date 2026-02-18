@@ -1,0 +1,23 @@
+Screen { background: transparent; }
+    #main-container { background: transparent; height: 100%; }
+    
+    Column {
+        height: 100%;
+        background: transparent;
+        border: round ansi_black;
+        border-title-align: center;
+    }
+
+    Column:focus {
+      border: round ansi_red;
+    }
+
+    #browse { 
+        width: 1fr; 
+    }
+    #details { 
+        width: 1fr; 
+    }
+    #downloading { 
+        width: 1fr; 
+    }
