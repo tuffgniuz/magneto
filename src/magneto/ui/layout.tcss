@@ -8,16 +8,32 @@ Screen { background: transparent; }
         border-title-align: center;
     }
 
+     
+    MovieItem {
+      background: transparent;
+    }
+
     Column:focus {
       border: round ansi_red;
     }
 
+    #browse:focus {
+      border: round ansi_red;
+    }
+
     #browse { 
-        width: 1fr; 
+      width: 1fr; 
+      height: 1fr;
+      background: transparent;
+      border: round ansi_black;
+      border-title-align: center;
+      padding: 0 2;
     }
     #details { 
-        width: 1fr; 
+      width: 1fr; 
+      height: 1fr;
     }
     #downloading { 
-        width: 1fr; 
+      width: 1fr; 
+      height: 1fr;
     }
