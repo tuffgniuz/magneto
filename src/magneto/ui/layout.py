@@ -3,6 +3,7 @@ from textual.containers import Container
 from textual.widgets import Label, ListItem, ListView, Static
 
 from magneto.api.yts import YTSClient
+from magneto.ui.search_modal import SearchModal
 
 NARROW_THRESHOLD = 120  # columns
 
@@ -28,7 +29,9 @@ class MovieItem(ListItem):
 
 
 class MagnetoApp(App):
-    CSS_PATH = "layout.tcss"
+    CSS_PATH = "style.tcss"
+    
+    BINDINGS = [("q", "quit", "Quit"), ("/", "show_search", "Search"),]
 
     def __init__(self):
         super().__init__(ansi_color=True)
@@ -39,6 +42,15 @@ class MagnetoApp(App):
             yield ListView(id="browse")
             yield Column("Movie Details", id="details")
             yield Column("Downloading", id="downloading")
+
+    def action_show_search(self) -> None:
+        """Show search modal screen"""
+        def handle_search_query(query: str) -> None:
+            if query:
+                self.log(f"Searching for: {query}")
+
+        self.push_screen(SearchModal(), handle_search_query)
+
 
     def on_resize(self, event) -> None:
         """Switch layout based on terminal width."""
