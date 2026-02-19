@@ -1,10 +1,10 @@
-from textual.widgets import Static
+from textual.containers import Container
 
 
-class Column(Static):
+class Column(Container):
     can_focus = True
 
-    def __init__(self, title: str, id: str) -> None:
-        super().__init__(id=id)
+    def __init__(self, title: str, *children, id: str) -> None:
+        super().__init__(*children, id=id)
         self.border_title = title
 

@@ -33,14 +33,16 @@ MovieItem {
   padding: 0 2;
 }
 
-#details { 
-  width: 1fr; 
-  height: 1fr;
+#details {
+  padding: 1;
 }
 
-#downloading { 
-  width: 1fr; 
-  height: 1fr;
+#details-column {
+  width: 1fr;
+}
+
+#downloading-column {
+  width: 1fr;
 }
 
 /* Center the loading indicator within the ListItem container */
@@ -75,4 +77,18 @@ SearchModal {
 Input {
   background: transparent;
   border: round ansi_red;
+}
+
+TorrentModal {
+  align: center middle;
+  border-title-align: center;
+  background: transparent;
+}
+
+#torrent-modal {
+  background: transparent;
+  width: 50%;
+  height: 20;
+  border: round ansi_red;
+  padding: 1;
 }

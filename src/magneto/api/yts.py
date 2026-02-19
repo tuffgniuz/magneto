@@ -52,3 +52,20 @@ class YTSClient:
 
             data = response.json()
             return data["data"].get("movies", [])
+
+    async def get_movie_details(self, movie_id: int) -> dict:
+        """Fetch details for a specific movie."""
+        async with httpx.AsyncClient(
+            follow_redirects=True,
+            headers=self.HEADERS,
+            timeout=15.0,
+        ) as client:
+            if not self.base_url:
+                self.base_url = await self._find_working_domain(client)
+
+            url = f"{self.base_url}/api/v2/movie_details.json"
+            params = {"movie_id": movie_id}
+            response = await client.get(url, params=params)
+            response.raise_for_status()
+            data = response.json()
+            return data["data"].get("movie", {})
