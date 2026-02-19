@@ -30,7 +30,7 @@ class YTSClient:
                 continue
         raise ConnectionError("No working YTS domain found.")
 
-    async def list_movies(self, page: int = 1, limit: int = 50) -> list[dict]:
+    async def list_movies(self, page: int = 1, limit: int = 20, query_term: str | None = None) -> list[dict]:
         """Fetch a list of movies. Returns a list of movie dicts."""
         async with httpx.AsyncClient(
             follow_redirects=True,
@@ -41,7 +41,11 @@ class YTSClient:
                 self.base_url = await self._find_working_domain(client)
 
             url = f"{self.base_url}/api/v2/list_movies.json"
+
             params = {"page": page, "limit": limit}
+
+            if query_term:
+                params["query_term"] = query_term
 
             response = await client.get(url, params=params)
             response.raise_for_status()

@@ -1,69 +1,59 @@
 Screen { background: transparent; }
-    #main-container { background: transparent; height: 100%; }
-    
-    Column {
-        height: 100%;
-        background: transparent;
-        border: round ansi_black;
-        border-title-align: center;
-    }
 
-     
-    MovieItem {
-      background: transparent;
-    }
+#main-container { 
+  background: transparent; 
+  height: 100%; 
+}
 
-    Column:focus {
-      border: round ansi_red;
-    }
+Column {
+  height: 100%;
+  background: transparent;
+  border: round ansi_black;
+  border-title-align: center;
+}
 
-    #browse:focus {
-      border: round ansi_red;
-    }
+Column:focus {
+  border: round ansi_red;
+}
 
-    #browse {
-    /* 'stable' prevents layout shift when scrollbar appears/disappears */
-    scrollbar-gutter: stable; 
-    /* Adjust width/height of the bar */
-    scrollbar-size: 1 1; 
-    }
+MovieItem {
+  background: transparent;
+}
 
-    /* The background track of the scrollbar */
-    #browse > .visual-scroll--vertical {
-        background: transparent;
-    }
+#browse:focus {
+  border: round ansi_red;
+}
 
-    #browse > .visual-scroll--vertical > .visual-scroll__thumb {
-        background: transparent; /* Or a specific hex like #5f5fff */
-        color: ansi_magenta;
-    }
+#browse { 
+  width: 1fr; 
+  height: 1fr;
+  background: transparent;
+  border: round ansi_black;
+  border-title-align: center;
+  padding: 0 2;
+}
 
-    /* Styling for the horizontal scrollbar if it appears */
-    #browse > .visual-scroll--horizontal > .visual-scroll__thumb {
-        background: ansi_magenta;
-    }
+#details { 
+  width: 1fr; 
+  height: 1fr;
+}
 
-    /* Optional: change color on hover for better UX */
-    #browse > .visual-scroll--vertical > .visual-scroll__thumb:hover {
-        background: ansi_magenta;
-    }
+#downloading { 
+  width: 1fr; 
+  height: 1fr;
+}
 
-    #browse { 
-      width: 1fr; 
-      height: 1fr;
-      background: transparent;
-      border: round ansi_black;
-      border-title-align: center;
-      padding: 0 2;
-    }
-    #details { 
-      width: 1fr; 
-      height: 1fr;
-    }
-    #downloading { 
-      width: 1fr; 
-      height: 1fr;
-    }
+/* Center the loading indicator within the ListItem container */
+#browse > LoadingIndicator {
+    height: 100%;
+    content-align: center middle;
+}
+
+/* Optional: Ensure the ListItem itself stretches to provide centering room */
+
+LoadingIndicator {
+  color: ansi_red;
+}
 
 /**
 *************** 

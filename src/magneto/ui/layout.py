@@ -1,37 +1,23 @@
 from textual.app import App, ComposeResult
 from textual.containers import Container
-from textual.widgets import Label, ListItem, ListView, Static
+from textual.widgets import Label, ListItem, ListView, LoadingIndicator, Static
 
 from magneto.api.yts import YTSClient
+from magneto.ui.column import Column
+from magneto.ui.movie_item import MovieItem
 from magneto.ui.search_modal import SearchModal
 
 NARROW_THRESHOLD = 120  # columns
 
 
-class Column(Static):
-    can_focus = True
-
-    def __init__(self, title: str, id: str) -> None:
-        super().__init__(id=id)
-        self.border_title = title
-
-
-class MovieItem(ListItem):
-    def __init__(self, movie: dict) -> None:
-        super().__init__()
-        self.movie = movie
-
-    def compose(self) -> ComposeResult:
-        title = self.movie["title"]
-        year = self.movie["year"]
-        rating = self.movie["rating"]
-        yield Label(f"{title} ({year}) ⭐ {rating}")
-
-
 class MagnetoApp(App):
     CSS_PATH = "style.tcss"
     
-    BINDINGS = [("q", "quit", "Quit"), ("/", "show_search", "Search"),]
+    BINDINGS = [
+        ("q", "quit", "Quit"), 
+        ("/", "show_search", "Search"),
+        ("c", "clear_search", "Clear search")
+    ]
 
     def __init__(self):
         super().__init__(ansi_color=True)
@@ -43,14 +29,37 @@ class MagnetoApp(App):
             yield Column("Movie Details", id="details")
             yield Column("Downloading", id="downloading")
 
+    async def update_browse_list(self, query: str | None = None) -> None:
+        browse_list = self.query_one("#browse", ListView)
+        browse_list.clear()
+
+        browse_list.append(ListItem(LoadingIndicator()))
+
+        try:
+            movies = await self.yts.list_movies(limit=20, query_term=query)
+            browse_list.clear()
+
+            if not movies:
+                browse_list.append(ListItem(Label("No movies found")))
+                return
+
+            for movie in movies:
+                browse_list.append(MovieItem(movie))
+
+        except Exception as e:
+            browse_list.clear()
+            browse_list.append(ListItem(Label(f"Error: {e}")))
+
     def action_show_search(self) -> None:
         """Show search modal screen"""
         def handle_search_query(query: str) -> None:
             if query:
-                self.log(f"Searching for: {query}")
+                self.run_worker(self.update_browse_list(query))
 
         self.push_screen(SearchModal(), handle_search_query)
 
+    def action_clear_search(self) -> None:
+        self.run_worker(self.update_browse_list())
 
     def on_resize(self, event) -> None:
         """Switch layout based on terminal width."""
@@ -71,10 +80,5 @@ class MagnetoApp(App):
             container.styles.layout = "vertical"
         else:
             container.styles.layout = "horizontal"
-
-        try:
-            movies = await self.yts.list_movies(limit=20)
-            for movie in movies:
-                browse.append(MovieItem(movie))
-        except Exception as e:
-            browse.append(ListItem(Label(f"Error: {e}")))
+        
+        self.run_worker(self.update_browse_list())
