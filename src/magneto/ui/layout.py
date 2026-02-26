@@ -1,3 +1,6 @@
+import subprocess
+import sys
+
 from textual.app import App, ComposeResult
 from textual.containers import Container
 from textual.widgets import ListView
@@ -32,7 +35,19 @@ class MagnetoApp(App):
         with Container(id="main-container"):
             yield MovieList(id="browse")
             yield Column("Movie Details", MovieDetails(id="details"), id="details-column")
-            yield Column("Downloading", id="downloading-column")
+            # yield Column("Downloading", id="downloading-column")
+
+    def open_magnet_link(self, magnet_link: str) -> None:
+        """Open a magnet link with the default torrent client."""
+        try:
+            if sys.platform == "win32":
+                subprocess.Popen(["start", magnet_link], shell=True)
+            elif sys.platform == "darwin":
+                subprocess.Popen(["open", magnet_link])
+            else:
+                subprocess.Popen(["xdg-open", magnet_link])
+        except FileNotFoundError:
+            self.notify("Could not find a torrent client.", severity="error")
 
     async def fetch_and_cache_details(self, movie_id: int) -> None:
         """Fetch movie details and cache them."""
@@ -62,7 +77,6 @@ class MagnetoApp(App):
                 details_pane.update_details(self.movie_cache[movie_id])
             else:
                 details_pane.update("Loading...")
-                # The background worker will update the pane when details are fetched
 
     def action_show_torrents(self) -> None:
         browse_list = self.query_one("#browse", MovieList)
