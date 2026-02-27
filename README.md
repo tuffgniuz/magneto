@@ -28,6 +28,23 @@ For a local installation, you can build a standalone binary from the source code
     magneto
     ```
 
+> [!IMPORTANT]
+> Ensure that `~/.local/bin` is in your system's `PATH` to run `magneto` globally.
+
+#### How to add `~/.local/bin` to your `PATH`:
+
+**For Bash and Zsh:**
+Add this line to your `~/.bashrc` or `~/.zshrc`:
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+**For Fish:**
+Run this command in your terminal:
+```fish
+fish_add_path ~/.local/bin
+```
+
 ## Development
 
 To run the application in a development environment:
