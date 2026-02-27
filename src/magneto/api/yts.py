@@ -64,7 +64,7 @@ class YTSClient:
                 self.base_url = await self._find_working_domain(client)
 
             url = f"{self.base_url}/api/v2/movie_details.json"
-            params = {"movie_id": movie_id}
+            params = {"movie_id": movie_id, "with_cast": "true"}
             response = await client.get(url, params=params)
             response.raise_for_status()
             data = response.json()
