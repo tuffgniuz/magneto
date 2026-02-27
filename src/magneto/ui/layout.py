@@ -11,13 +11,14 @@ from magneto.ui.movie_details import MovieDetails
 from magneto.ui.movie_item import MovieItem
 from magneto.ui.movie_list import MovieList
 from magneto.ui.search_modal import SearchModal
+from magneto.utils import get_asset_path
 from magneto.ui.torrent_modal import TorrentModal
 
 NARROW_THRESHOLD = 120  # columns
 
 
 class MagnetoApp(App):
-    CSS_PATH = "style.tcss"
+    CSS_PATH = get_asset_path("magneto/ui/style.tcss")
 
     BINDINGS = [
         ("q", "quit", "Quit"),
