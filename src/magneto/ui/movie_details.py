@@ -14,8 +14,14 @@ class MovieDetails(Static):
             return
 
         genres = ", ".join(movie.get("genres", []))
+        language = movie.get("language", "N/A")
+        
+        cast = ", ".join([actor["name"] for actor in movie.get("cast", [])[:5]])
+
+
         self.update(
             f"[b]{movie['title_long']}[/b]\n\n"
-            f"Rating: {movie['rating']} | Genres: {genres}\n\n"
+            f"Rating: {movie['rating']} | Genres: {genres} | Language: {language}\n\n"
+            f"Cast: {cast}\n\n"
             f"{movie['description_full']}"
         )
