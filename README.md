@@ -45,6 +45,17 @@ To run the application in a development environment:
 
 ## Key Bindings
 
--   `/`: Show search
--   `c`: Clear search
--   `q`: Quit
+### Global
+- `/`: Search for movies
+- `c`: Clear search results
+- `t`: Show available torrents for the selected movie
+- `up`/`down` (or `k`/`j`): Navigate the movie list
+- `q`: Quit the application
+
+### Search Modal
+- `enter`: Submit search
+- `escape`: Cancel and close search modal
+
+### Torrent Modal
+- `d`: Download the selected torrent (opens magnet link in default client)
+- `escape`: Close the torrent modal
