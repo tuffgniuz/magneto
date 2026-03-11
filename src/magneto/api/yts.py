@@ -1,6 +1,10 @@
 import httpx
 
 
+class MovieListResponse(dict):
+    """Dictionary response container for list_movies metadata."""
+
+
 class YTSClient:
     """Async client for the YTS API."""
 
@@ -30,8 +34,14 @@ class YTSClient:
                 continue
         raise ConnectionError("No working YTS domain found.")
 
-    async def list_movies(self, page: int = 1, limit: int = 20, query_term: str | None = None) -> list[dict]:
-        """Fetch a list of movies. Returns a list of movie dicts."""
+    async def list_movies(
+        self,
+        page: int = 1,
+        limit: int = 20,
+        query_term: str | None = None,
+        genre: str | None = None,
+    ) -> MovieListResponse:
+        """Fetch a list of movies and pagination metadata."""
         async with httpx.AsyncClient(
             follow_redirects=True,
             headers=self.HEADERS,
@@ -46,12 +56,20 @@ class YTSClient:
 
             if query_term:
                 params["query_term"] = query_term
+            if genre:
+                params["genre"] = genre
 
             response = await client.get(url, params=params)
             response.raise_for_status()
 
             data = response.json()
-            return data["data"].get("movies", [])
+            payload = data["data"]
+            return MovieListResponse(
+                movies=payload.get("movies", []),
+                movie_count=payload.get("movie_count", 0),
+                limit=payload.get("limit", limit),
+                page_number=payload.get("page_number", page),
+            )
 
     async def get_movie_details(self, movie_id: int) -> dict:
         """Fetch details for a specific movie."""

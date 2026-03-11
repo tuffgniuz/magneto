@@ -16,6 +16,7 @@ build:
 		--name magneto \
 		--collect-all rich \
 		--collect-all textual \
+		--collect-all textual_image \
 		--add-data "src/magneto/ui/style.tcss:magneto/ui"
 
 # Installs the binary to the local bin directory

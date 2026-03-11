@@ -1,8 +1,16 @@
 from textual.app import ComposeResult
 from textual.screen import Screen
 from textual.widgets import ListView
+from urllib.parse import quote
 
 from magneto.ui.torrent_item import TorrentItem
+
+
+class TorrentList(ListView):
+    BINDINGS = [
+        ("j", "cursor_down", "Down"),
+        ("k", "cursor_up", "Up"),
+    ]
 
 
 class TorrentModal(Screen):
@@ -18,7 +26,7 @@ class TorrentModal(Screen):
         self.torrents = torrents
 
     def compose(self) -> ComposeResult:
-        yield ListView(*[TorrentItem(t, self.modal_title) for t in self.torrents], id="torrent-modal")
+        yield TorrentList(*[TorrentItem(t, self.modal_title) for t in self.torrents], id="torrent-modal")
 
     def on_mount(self) -> None:
         list_view = self.query_one(ListView)
@@ -30,16 +38,16 @@ class TorrentModal(Screen):
         list_view = self.query_one(ListView)
         highlighted_item = list_view.highlighted_child
         if isinstance(highlighted_item, TorrentItem):
-            magnet_link = self._construct_magnet_link(
-                highlighted_item.torrent, highlighted_item.movie_title
+            self.app.run_worker(
+                self.app.open_torrent(highlighted_item.torrent, highlighted_item.movie_title)
             )
-            self.app.open_magnet_link(magnet_link)
             self.app.pop_screen()
 
-    def _construct_magnet_link(self, torrent: dict, movie_title: str) -> str:
+    @staticmethod
+    def construct_magnet_link(torrent: dict, movie_title: str) -> str:
         """Construct the magnet link from torrent data."""
         hash_ = torrent["hash"]
-        dn = movie_title
+        dn = quote(movie_title, safe="")
         trackers = [
             "udp://glotorrents.pw:6969/announce",
             "udp://tracker.opentrackr.org:1337/announce",
@@ -53,7 +61,6 @@ class TorrentModal(Screen):
 
         magnet_link = f"magnet:?xt=urn:btih:{hash_}&dn={dn}"
         for tracker in trackers:
-            magnet_link += f"&tr={tracker}"
+            magnet_link += f"&tr={quote(tracker, safe='')}"
 
         return magnet_link
-
